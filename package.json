@@ -1,18 +1,28 @@
 {
   "name": "ycs-library",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
+  "style": "./dist/style.css",
+  "main": "./dist/ycs-library.umd.js",
+  "module": "./dist/ycs-library.es.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ycs-library.es.js",
+      "require": "./dist/ycs-library.umd.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
   "scripts": {
-    "build": "tsc -b && vite build",
+    "build": "vite build && tsc -p tsconfig.build.json && npm run rename-css",
     "lint": "eslint .",
     "watch": "npx @tailwindcss/cli -i ./src/index.css -o ./dist/index.css --content './src/**/*.{js,ts,jsx,tsx}' --watch",
-    "dev": "npm --prefix playground run dev"
+    "dev": "npm --prefix playground run dev",
+    "rename-css": "mv ./dist/ycs-library.css ./dist/style.css"
   },
-  "files": [
-    "dist",
-    "dist/index.css"
-  ],
   "dependencies": {
     "@tailwindcss/vite": "^4.1.4",
     "react": "^19.0.0",

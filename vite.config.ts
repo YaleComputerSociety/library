@@ -7,8 +7,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'MyLib',
-      fileName: (format) => `my-lib.${format}.js`,
+      name: 'ycs-library',
+      fileName: (format) => `ycs-library.${format}.js`,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
