@@ -5,8 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "watch": "npx @tailwindcss/cli -i ./src/index.css -o ./dist/index.css --content './src/**/*.{js,ts,jsx,tsx}' --watch",
+    "dev": "npm --prefix playground run dev"
   },
+  "files": [
+    "dist",
+    "dist/index.css"
+  ],
   "dependencies": {
     "@tailwindcss/vite": "^4.1.4",
     "react": "^19.0.0",
