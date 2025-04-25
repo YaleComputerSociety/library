@@ -6,7 +6,7 @@ import ylabs from "./assets/ylabs.png";
 import ymeets from "./assets/ymeetslogo.png";
 import yims from "./assets/yims.png";
 import yalies from "./assets/yalies.png";
-import yaleclubs from "./assets/yaleclubs.svg";
+import yaleclubs from "./assets/yaleclubs.png";
 import majoraudit from "./assets/majoraudit.png";
 import coursetable from "./assets/coursetable.png";
 import ycsLogo from "./assets/blackLogo.png";
@@ -77,7 +77,7 @@ export const HeaderModal = () => {
       {isOpen && (
         <div
           ref={menuRef}
-          className={`absolute ${position}-0 mt-2 bg-gray-500/10 rounded-xl p-4 z-50 w-80`}
+          className={`absolute ${position}-0 mt-4 bg-gray-500/10 rounded-xl p-4 z-50 w-80`}
         >
           <div className="grid grid-cols-3 gap-4">
             {products.map((product) => (
@@ -100,7 +100,7 @@ export const HeaderModal = () => {
             ))}
           </div>
           <div className="mt-4">
-            <h3 className="mb-2 text-center text-gray-700">------ In Development ------</h3>
+            <h3 className="mb-2 text-center text-gray-600">------ In Development ------</h3>
             <div className="grid grid-cols-3 gap-4">
             {inDevelopment.map((product) => (
               <div key={product.name} className="flex flex-col items-center p-2 hover:bg-gray-500/20 rounded-lg transition-colors">
