@@ -15,10 +15,13 @@ const products = [
   { name: "CourseTable", logo: coursetable, url: "https://coursetable.com" },
   { name: "Yalies", logo: yalies, url: "https://yalies.io" },
   { name: "YaleClubs", logo: yaleclubs, url: "https://yaleclubs.io" },
-  { name: "Y Meets", logo: ymeets, url: "https://ymeets.com" },
-  { name: "Y IMS", logo: yims, url: "https://yaleims.com" },
-  { name: "Y Labs", logo: ylabs, url: "https://yalelabs.io" },
-  { name: "Major Audit", logo: majoraudit, url: "https://majoraudit.web.app/" },
+  { name: "ymeets", logo: ymeets, url: "https://ymeets.com" },
+  { name: "YaleIMs", logo: yims, url: "https://yaleims.com" },
+  { name: "YLabs", logo: ylabs, url: "https://yalelabs.io" },
+];
+
+const inDevelopment = [
+  { name: "MajorAudit", logo: majoraudit, url: "https://majoraudit.web.app/" },
 ];
 
 export const HeaderModal = () => {
@@ -26,6 +29,16 @@ export const HeaderModal = () => {
   const [position, setPosition] = useState<"left" | "right">("right");
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleResize = () => {
+    if (buttonRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const menuWidth = 288; // w-72 = 20rem = 320px
+      const spaceOnRight = window.innerWidth - buttonRect.right;
+      console.log(window.innerWidth, buttonRect.right, spaceOnRight);
+      setPosition(spaceOnRight >= menuWidth ? "left" : "right");
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,18 +52,10 @@ export const HeaderModal = () => {
       }
     };
 
-    const handleResize = () => {
-      if (buttonRef.current && menuRef.current) {
-        const buttonRect = buttonRef.current.getBoundingClientRect();
-        const menuWidth = 320; // w-80 = 20rem = 320px
-        const spaceOnRight = window.innerWidth - buttonRect.right;
-        setPosition(spaceOnRight >= menuWidth ? "right" : "left");
-      }
-    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
 
     document.addEventListener("mousedown", handleClickOutside);
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -72,7 +77,7 @@ export const HeaderModal = () => {
       {isOpen && (
         <div
           ref={menuRef}
-          className={`absolute ${position}-0 mt-2 bg-white rounded-lg shadow-xl p-4 z-50 w-80`}
+          className={`absolute ${position}-0 mt-2 bg-gray-500/10 rounded-xl p-4 z-50 w-80`}
         >
           <div className="grid grid-cols-3 gap-4">
             {products.map((product) => (
@@ -81,18 +86,31 @@ export const HeaderModal = () => {
                 href={product.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex flex-col items-center p-2 hover:bg-gray-500/20 rounded-lg transition-colors"
               >
                 <img
                   src={product.logo}
                   alt={product.name}
-                  className="w-10 h-10 object-contain mb-1"
+                  className="w-12 h-12 object-contain"
                 />
-                <span className="text-xs text-center text-gray-700">
+                <span className="text-sm text-center text-gray-700 mt-2 font-semibold">
                   {product.name}
                 </span>
               </a>
             ))}
+          </div>
+          <div className="mt-4">
+            <h3 className="mb-2 text-center text-gray-700">------ In Development ------</h3>
+            <div className="grid grid-cols-3 gap-4">
+            {inDevelopment.map((product) => (
+              <div key={product.name} className="flex flex-col items-center p-2 hover:bg-gray-500/20 rounded-lg transition-colors">
+                <img src={product.logo} alt={product.name} className="w-12 h-12 object-contain" />
+                <span className="text-sm text-center text-gray-700 mt-2 font-semibold">
+                  {product.name}
+                </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

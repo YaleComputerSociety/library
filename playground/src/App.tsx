@@ -2,7 +2,11 @@ import 'ycs-library/style.css';
 import { HeaderModal } from 'ycs-library';
 
 function App() {
-  return <HeaderModal />;
+  return (
+    <div className="flex justify-end">
+      <HeaderModal />
+    </div>
+  );
 }
 
 export default App;
