@@ -1,13 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import "./index.css";
 
 // Import product logos
 import ylabs from "./assets/ylabs.png";
 import ymeets from "./assets/ymeetslogo.png";
-import yims from "./assets/yims.png";
+import yims from "./assets/yims2.png";
 import yalies from "./assets/yalies.png";
 import yaleclubs from "./assets/yaleclubs.png";
-import majoraudit from "./assets/majoraudit.png";
 import coursetable from "./assets/coursetable.png";
 import ycsLogo from "./assets/blackLogo.png";
 
@@ -20,25 +19,41 @@ const products = [
   { name: "YLabs", logo: ylabs, url: "https://yalelabs.io" },
 ];
 
-const inDevelopment = [
-  { name: "MajorAudit", logo: majoraudit, url: "https://majoraudit.web.app/" },
-];
-
 export const HeaderModal = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState<"left" | "right">("right");
+  const [menuClass, setMenuClass] = useState("");
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const handleResize = () => {
+  const calculatePosition = () => {
     if (buttonRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect();
-      const menuWidth = 288; // w-72 = 20rem = 320px
-      const spaceOnRight = window.innerWidth - buttonRect.right;
-      console.log(window.innerWidth, buttonRect.right, spaceOnRight);
-      setPosition(spaceOnRight >= menuWidth ? "left" : "right");
+      const menuWidth = 280; // w-72 = 20rem = 320px
+      const padding = 16; // 1rem padding from screen edge
+
+      // Check if menu would overflow on either side
+      const spaceOnLeft = buttonRect.left - padding;
+      const spaceOnRight = window.innerWidth - buttonRect.right - padding;
+
+      if (spaceOnLeft < menuWidth / 2 && spaceOnRight > menuWidth / 2) {
+        // If we're hitting the left edge but have space on the right
+        return "left-0";
+      } else if (spaceOnRight < menuWidth / 2 && spaceOnLeft > menuWidth / 2) {
+        // If we're hitting the right edge but have space on the left
+        return "right-0";
+      } else {
+        // Otherwise center it
+        return "left-1/2 -translate-x-1/2";
+      }
     }
+    return "left-1/2 -translate-x-1/2"; // Default to centered
   };
+
+  const handleResize = useCallback(() => {
+    if (isOpen) {
+      setMenuClass(calculatePosition());
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -53,21 +68,25 @@ export const HeaderModal = () => {
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize();
-
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [handleResize]);
+
+  const handleButtonClick = () => {
+    const newPosition = calculatePosition();
+    setMenuClass(newPosition);
+    setIsOpen(!isOpen);
+  };
 
   return (
     <div className="relative">
       <button
         ref={buttonRef}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleButtonClick}
         className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
         aria-label="YCS Products Menu"
       >
@@ -77,9 +96,9 @@ export const HeaderModal = () => {
       {isOpen && (
         <div
           ref={menuRef}
-          className={`absolute ${position}-0 mt-4 bg-gray-500/10 rounded-xl p-4 z-50 w-80`}
+          className={`absolute ${menuClass} mt-4 bg-gray-500/10 rounded-xl py-4 px-4 z-50 w-72`}
         >
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-2">
             {products.map((product) => (
               <a
                 key={product.name}
@@ -91,26 +110,13 @@ export const HeaderModal = () => {
                 <img
                   src={product.logo}
                   alt={product.name}
-                  className="w-12 h-12 object-contain"
+                  className="w-10 h-10 object-contain"
                 />
-                <span className="text-sm text-center text-gray-700 mt-2 font-semibold">
+                <span className="text-xs text-center text-gray-700 mt-2 font-semibold">
                   {product.name}
                 </span>
               </a>
             ))}
-          </div>
-          <div className="mt-4">
-            <h3 className="mb-2 text-center text-gray-600">------ In Development ------</h3>
-            <div className="grid grid-cols-3 gap-4">
-            {inDevelopment.map((product) => (
-              <div key={product.name} className="flex flex-col items-center p-2 hover:bg-gray-500/20 rounded-lg transition-colors">
-                <img src={product.logo} alt={product.name} className="w-12 h-12 object-contain" />
-                <span className="text-sm text-center text-gray-700 mt-2 font-semibold">
-                  {product.name}
-                </span>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       )}
